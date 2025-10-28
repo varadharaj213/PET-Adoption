@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rehome a Pet</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f9f9f9;
+    }
+    .pet-card {
+      border: 2px solid #eee;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      transition: 0.3s;
+      cursor: pointer;
+      background: white;
+    }
+    .pet-card:hover, .pet-card.selected {
+      border-color: #007bff;
+      transform: scale(1.05);
+    }
+    .pet-card img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .alert-fixed {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1055;
+      width: 60%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-primary" href="#">ThePetNest</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="Home.html">Home services</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Shop 🛒</a></li>
+        <li class="nav-item"><a class="btn btn-warning" href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Message Display -->
+<div id="resultMessage" class="alert-fixed"></div>
+
+<!-- Main Form -->
+<div class="container my-5">
+  <h2 class="text-center">Rehome a Pet</h2>
+
+  <form id="petForm">
+    <!-- Pet Name -->
+    <div class="mb-3">
+      <label class="form-label">Pet's Name?</label>
+      <input type="text" class="form-control" name="petName" placeholder="Please enter your pet's name...">
+    </div>
+
+    <!-- Pet Type -->
+    <div class="mb-3">
+      <label class="form-label">Pet Type?</label>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="pet-card" data-value="Dog">
+            <img src="https://img.icons8.com/color/96/dog.png" alt="Dog">
+            <h6>Dog</h6>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="pet-card" data-value="Cat">
+            <img src="https://img.icons8.com/color/96/cat.png" alt="Cat">
+            <h6>Cat</h6>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="pet-card" data-value="Bird">
+            <img src="https://img.icons8.com/color/96/bird.png" alt="Bird">
+            <h6>Bird</h6>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name="petType">
+    </div>
+
+    <!-- Pet Breed -->
+    <div class="mb-3">
+      <label class="form-label">Pet Breed?</label>
+      <select class="form-select" name="petBreed">
+        <option value="">Select breed here...</option>
+        <optgroup label="Dog Breeds">
+          <option>Labrador</option>
+          <option>Golden Retriever</option>
+          <option>Beagle</option>
+          <option>Pug</option>
+        </optgroup>
+        <optgroup label="Cat Breeds">
+          <option>Persian</option>
+          <option>Siamese</option>
+          <option>Maine Coon</option>
+        </optgroup>
+        <optgroup label="Bird Breeds">
+          <option>Parrot</option>
+          <option>Cockatiel</option>
+          <option>Macaw</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <!-- Age of Pet -->
+    <div class="mb-3">
+      <label class="form-label">Age of your Pet?</label>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="pet-card" data-value="Puppyhood">
+            <img src="https://img.icons8.com/color/96/dog.png" alt="Puppy">
+            <h6>Puppyhood</h6>
+            <p class="text-muted">Up to 6 Months</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="pet-card" data-value="Adolescence">
+            <img src="https://img.icons8.com/color/96/dog.png" alt="Adolescence">
+            <h6>Adolescence</h6>
+            <p class="text-muted">6 - 18 Months</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="pet-card" data-value="Adulthood">
+            <img src="https://img.icons8.com/color/96/dog.png" alt="Adulthood">
+            <h6>Adulthood</h6>
+            <p class="text-muted">1.5 - 3 Years</p>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="pet-card" data-value="Senior">
+            <img src="https://img.icons8.com/color/96/dog.png" alt="Senior">
+            <h6>Senior</h6>
+            <p class="text-muted">3+ Years</p>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name="petAge">
+    </div>
+
+    <!-- Extra Pet Details -->
+    <div class="container border rounded p-3 bg-white mb-3">
+      <h5>Additional Pet Details</h5>
+
+      <div class="mb-2">
+        <label>Gender</label>
+        <select class="form-select" name="petGender">
+          <option value="">Select</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label>Vaccinated?</label>
+        <select class="form-select" name="petVaccinated">
+          <option value="">Select</option>
+          <option>Yes, Vaccinated</option>
+          <option>No, Not Vaccinated</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label>Neutered?</label>
+        <select class="form-select" name="petNeutered">
+          <option value="">Select</option>
+          <option>Yes, Neutered</option>
+          <option>No, Not Neutered</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label>Shots up to date?</label>
+        <select class="form-select" name="petShots">
+          <option value="">Select</option>
+          <option>Yes, Up to Date</option>
+          <option>No, Not Up to Date</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label>Good with Cats?</label>
+        <select class="form-select" name="goodWithCats">
+          <option value="">Select</option>
+          <option>Yes, Good with Cats</option>
+          <option>No, Not Good with Cats</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label>Good with Kids?</label>
+        <select class="form-select" name="goodWithKids">
+          <option value="">Select</option>
+          <option>Yes, Good with Kids</option>
+          <option>No, Not Good with Kids</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Reason -->
+    <div class="mb-3">
+      <label class="form-label">Why do you want to donate the pet?</label>
+      <textarea class="form-control" name="donationReason" rows="3" placeholder="Please explain why you want to donate the pet..."></textarea>
+    </div>
+
+    <!-- Submit -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary px-5">Continue</button>
+    </div>
+  </form>
+</div>
+ <!-- Footer -->
+  <footer class="text-light py-5" style="background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb); position:relative; overflow:hidden;">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <h5>🐾 About PetNet</h5>
+          <p>Helping pets find loving homes across India.  
+          Join us and #AdoptLove ❤</p>
+        </div>
+        <div class="col-md-4">
+          <h5>📌 Adoption Info</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" class="footer-link">🐶 Adopt a Dog</a></li>
+            <li><a href="#" class="footer-link">🐱 Adopt a Cat</a></li>
+            <li><a href="#" class="footer-link">🐦 Adopt a Bird</a></li>
+            <li><a href="#" class="footer-link">💰 Adoption Fees</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>📞 Contact</h5>
+          <p>Email: care@petnet.in</p>
+          <p>Phone: +91 98989898988</p>
+        </div>
+      </div>
+      <hr class="bg-light">
+      <p class="text-center mb-0">© 2025 PetNet. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$(document).ready(function(){
+
+  // Pet card selection
+  $(".pet-card").click(function(){
+    let value = $(this).data("value");
+    let parent = $(this).closest(".mb-3");
+    parent.find(".pet-card").removeClass("selected");
+    $(this).addClass("selected");
+    parent.find("input[type=hidden]").val(value);
+  });
+
+  // Form validation
+  $("#petForm").submit(function(e){
+    e.preventDefault();
+    let isValid = true;
+
+    $("#resultMessage").html("");
+
+    // Check all inputs
+    $("#petForm input[type=text], #petForm select, #petForm textarea, #petForm input[type=hidden]").each(function(){
+      if($(this).val().trim() === ""){
+        isValid = false;
+      }
+    });
+
+    if(isValid){
+      $("#resultMessage").html("<div class='alert alert-success'>✅ You have filled your pet details successfully!</div>");
+    } else {
+      $("#resultMessage").html("<div class='alert alert-danger'>⚠ Please fill all required details before continuing.</div>");
+    }
+  });
+});
+</script>
+</body>
+</html>

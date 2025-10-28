@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ThePetNest — Pet Relocation </title>
+
+  <!-- Bootstrap & jQuery -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    :root{
+      --brand:#0ea5e9;
+      --brand2:#7c3aed;
+      --ink:#0f172a;
+      --muted:#475569;
+      --glow:0 10px 30px rgba(14,165,233,.45), 0 2px 8px rgba(124,58,237,.35);
+    }
+    html{scroll-behavior:smooth;}
+    body{font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--ink); background:#0b1220;}
+    .container-narrow{max-width:1100px;}
+    /* NAV */
+    .navbar{backdrop-filter: blur(10px); background:linear-gradient(90deg,rgba(2,6,23,.7),rgba(2,6,23,.3)) !important;}
+    .navbar .nav-link{color:#e2e8f0 !important; opacity:.9}
+    .navbar .nav-link.active,.navbar .nav-link:hover{color:#fff !important;}
+    .brand-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:linear-gradient(90deg,var(--brand),var(--brand2));box-shadow:var(--glow);margin-left:6px}
+
+    /* HERO */
+    .hero{
+      position:relative; min-height:100vh; display:grid; place-items:center; text-align:center; color:#fff; overflow:hidden;
+      background:
+        linear-gradient(120deg,rgba(14,165,233,.55),rgba(124,58,237,.55)),
+        url('https://images.unsplash.com/photo-1612831662375-295c1003d3ef?auto=format&fit=crop&w=1800&q=80') center/cover no-repeat fixed;
+    }
+    .hero .headline{font-weight:800; letter-spacing:-.02em; font-size:clamp(2rem, 4vw + 1rem, 3.8rem);}
+    .hero .sub{max-width:760px; margin:10px auto 0; color:#e2e8f0; opacity:.95}
+    .btn-glow{
+      border:0; border-radius:999px; padding:12px 24px; font-weight:700; letter-spacing:.2px; color:#0b1220;
+      background:linear-gradient(90deg,var(--brand),var(--brand2)); box-shadow: var(--glow); transition:transform .2s ease;
+    }
+    .btn-glow:hover{transform: translateY(-2px) scale(1.01)}
+    .btn-ghost{border:1.6px solid rgba(255,255,255,.85); color:#fff; border-radius:999px; padding:12px 24px}
+    .hero-badge{
+      position:absolute; left:4%; bottom:8%; display:flex; gap:12px; align-items:center; padding:12px 16px; border-radius:14px;
+      background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); backdrop-filter: blur(6px);
+    }
+    .hero-badge img{width:42px;height:42px;object-fit:cover;border-radius:10px;}
+    .scroll-indicator{position:absolute; left:50%; transform:translateX(-50%); bottom:22px; color:#fff; opacity:.8; font-size:.9rem}
+
+    /* SECTION WRAPPER */
+    .section{padding:90px 0; background:#0b1220;}
+    .section h2{color:#f8fafc; font-weight:800; letter-spacing:-.02em;}
+    .section .section-sub{color:#94a3b8; max-width:760px}
+
+    /* CARDS / STEPS */
+    .step-card{
+      border:1px solid rgba(148,163,184,.15); border-radius:18px; overflow:hidden; background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      box-shadow: 0 10px 30px rgba(2,6,23,.35);
+      transform: translateY(25px); opacity:0; /* revealed by jQuery */
+    }
+    .step-media{height:180px; background-size:cover; background-position:center;}
+    .step-card .card-body{padding:18px;}
+    .badge-step{background:linear-gradient(90deg,var(--brand),var(--brand2)); color:#0b1220; font-weight:800; border-radius:999px; padding:6px 12px; font-size:.75rem; box-shadow: var(--glow);}
+
+    /* INFO STRIP */
+    .info-strip{
+      background: linear-gradient(90deg,rgba(14,165,233,.12), rgba(124,58,237,.12));
+      border-top:1px solid rgba(148,163,184,.18); border-bottom:1px solid rgba(148,163,184,.18);
+      color:#e2e8f0;
+    }
+
+    /* GALLERY */
+    .gallery .g-item{position:relative; overflow:hidden; border-radius:16px; border:1px solid rgba(148,163,184,.2); box-shadow: 0 12px 30px rgba(2,6,23,.45)}
+    .gallery img{width:100%; display:block; transition: transform .4s ease, filter .4s ease}
+    .gallery .g-item:hover img{transform: scale(1.06); filter: brightness(1.08)}
+    .g-caption{
+      position:absolute; left:12px; bottom:12px; color:#fff; background:rgba(2,6,23,.55); padding:6px 10px; border-radius:10px; font-size:.85rem;
+      border:1px solid rgba(255,255,255,.2);
+    }
+    .gallery .g-item button{
+      position:absolute; right:10px; top:10px; border:0; border-radius:999px; padding:8px 12px; font-weight:700; color:#0b1220;
+      background:linear-gradient(90deg,var(--brand),var(--brand2)); box-shadow: var(--glow);
+    }
+
+    /* CONTACT */
+    .contact-card{
+      border:1px solid rgba(148,163,184,.15); border-radius:18px; background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+      color:#e2e8f0; box-shadow: 0 10px 30px rgba(2,6,23,.35);
+    }
+    .contact-card .list-checked li{margin-bottom:10px; color:#cbd5e1}
+    .contact-card .list-checked li::marker{color:#22c55e;}
+
+    /* PARALLAX utility (for section banners) */
+    .parallax{background-attachment: fixed; background-position:center; background-size: cover;}
+
+    /* Back to top */
+    #backTop{
+      position:fixed; right:18px; bottom:18px; width:54px; height:54px; border-radius:999px; display:grid; place-items:center; cursor:pointer; z-index:999;
+      border:0; color:#0b1220; background:linear-gradient(90deg,var(--brand),var(--brand2)); box-shadow:var(--glow); opacity:0; transform: translateY(12px); transition:.2s;
+    }
+    #backTop.show{opacity:1; transform: translateY(0)}
+    footer{background:#020617; color:#94a3b8}
+  </style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#topnav" data-bs-offset="80" tabindex="0">
+
+  <!-- NAV -->
+  <!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="HOME.html">
+      <img src="https://images.yourstory.com/cs/images/companies/710751801005333980202317035797381702483968n-1614666151425.png" height="40" alt="ThePetNest"> ThePetNest
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+
+        <!-- Mega Menu Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link fw-bold dropdown-toggle" href="#" data-bs-toggle="dropdown">Home Services</a>
+          <div class="dropdown-menu p-4" style="min-width:700px; background:#1d2b64; color:white; border-radius:8px;">
+            <div class="row">
+              <!-- Column 1 -->
+              <div class="col-md-6">
+                <h6 class="text-warning mb-3">Home Services</h6>
+                <a class="dropdown-item text-light" href="lll.html">🐶 Pet Grooming</a>
+                <a class="dropdown-item text-light" href="DOG TRAINING.html">🎓 Dog Training</a>
+                <a class="dropdown-item text-light" href="dog RELOCATION parts.html">✈️ Pet Relocation</a>
+                <a class="dropdown-item text-light" href="CONSULT VET.html">👨‍⚕️ Consult a Vet</a>
+                <a class="dropdown-item text-light" href="walk dog.html">🐕 Dog Walking</a>
+                <a class="dropdown-item text-light" href="dog insurance.html">🩺 Pet Insurance</a>
+              </div>
+              
+              <!-- Column 2 -->
+              <div class="col-md-6">
+                <h6 class="text-warning mb-3">ThePetNest</h6>
+                <a class="dropdown-item text-light" href="online shopping.html">🛒 Online Pet Shop</a>
+                <a class="dropdown-item text-light" href="rehome a pet.html">🐾 Re-home a Pet</a>
+                <a class="dropdown-item text-light" href="adopt.html">📰 Adopt a Pet</a>
+                <a class="dropdown-item text-light" href="contact page.html">ℹ️ About Us</a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <!-- Shop -->
+        <li class="nav-item ms-2"><a class="nav-link fw-bold" href="online shopping.html"><i class="bi bi-cart"></i> Shop</a></li>
+        <!-- Login -->
+        <li class="nav-item ms-2"><a class="btn btn-orange fw-bold px-3" href="login page.html">Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- HERO -->
+  <header id="home" class="hero parallax" data-parallax-speed="0.4">
+    <div class="container container-narrow position-relative">
+      <h1 class="headline mb-2 opacity-0">Safe, Stress-Free Pet Relocation</h1>
+      <p class="sub lead mb-4 opacity-0">Local, interstate, and international moves handled by experts — permits, airline crates, vet docs, and real-time updates.</p>
+      <div class="d-flex gap-3 justify-content-center opacity-0">
+        <a href="#steps" class="btn btn-glow">How it Works</a>
+        <a href="#contact" class="btn btn-ghost">Get a Quote</a>
+      </div>
+    </div>
+    <div class="hero-badge d-none d-md-flex">
+      <img src="https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?auto=format&fit=crop&w=200&q=70" alt="Trainer">
+      <div>
+        <div class="fw-bold">12,000+ Pets Relocated</div>
+        <small>Avg. rating 4.9/5 ⭐</small>
+      </div>
+    </div>
+    <div class="scroll-indicator">Scroll ↓</div>
+  </header>
+
+  <!-- INFO STRIP -->
+  <section class="info-strip py-3">
+    <div class="container text-center small">
+      <span class="me-3">✈️ Airline-ready crates</span>
+      <span class="me-3">🧪 Vet docs & NOC</span>
+      <span class="me-3">🚐 Climate-controlled transport</span>
+      <span class="">📍 Live trip updates</span>
+    </div>
+  </section>
+
+  <!-- STEPS -->
+  <section id="steps" class="section">
+    <div class="container container-narrow text-center">
+      <h2 class="mb-2">How It Works</h2>
+      <p class="section-sub mx-auto mb-5">We plan every detail so your pet travels comfortably and arrives safely.</p>
+
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="step-card h-100">
+            <div class="step-media" style="background-image:url('https://images.unsplash.com/photo-1525253086316-d0c936c814f8?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="card-body text-start">
+              <span class="badge-step">Step 1</span>
+              <h5 class="mt-2 text-white">Assessment & Planning</h5>
+              <p class="mb-0 text-secondary">Breed rules, crate sizing, routes & timelines — we map it all with you.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-card h-100">
+            <div class="step-media" style="background-image:url('https://images.unsplash.com/photo-1574782090896-c13864a9c9b5?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="card-body text-start">
+              <span class="badge-step">Step 2</span>
+              <h5 class="mt-2 text-white">Health & Documents</h5>
+              <p class="mb-0 text-secondary">Vet checks, vaccines, health certificates, passports & export/NOC.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-card h-100">
+            <div class="step-media" style="background-image:url('https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=1200&q=80')"></div>
+            <div class="card-body text-start">
+              <span class="badge-step">Step 3</span>
+              <h5 class="mt-2 text-white">Transport & Care</h5>
+              <p class="mb-0 text-secondary">Comfort-first ground/air transit with trained attendants and updates.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- OPTIONS / PRICING TEASER -->
+  <section id="options" class="section parallax" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80')" data-parallax-speed="0.2">
+    <div class="container container-narrow text-center">
+      <h2 class="mb-2">Relocation Options</h2>
+      <p class="section-sub mx-auto mb-4">Choose what fits — all include planning & paperwork support.</p>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="contact-card p-4 h-100">
+            <h5 class="text-white mb-1">Local (Door-to-Door)</h5>
+            <p class="text-secondary mb-3">Same-city with climate-controlled vans.</p>
+            <button class="btn btn-glow w-100" data-target="#contact">Get Quote</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="contact-card p-4 h-100">
+            <h5 class="text-white mb-1">Interstate (Road/Air)</h5>
+            <p class="text-secondary mb-3">Crate prep, airline coordination & permits.</p>
+            <button class="btn btn-glow w-100" data-target="#contact">Get Quote</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="contact-card p-4 h-100">
+            <h5 class="text-white mb-1">International</h5>
+            <p class="text-secondary mb-3">Global relocations with export/import support.</p>
+            <button class="btn btn-glow w-100" data-target="#contact">Get Quote</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="section">
+    <div class="container container-narrow">
+      <div class="text-center mb-4">
+        <h2 class="mb-2">Our Happy Travelers</h2>
+        <p class="section-sub mx-auto">Tap any photo to view larger. All images load from Unsplash.</p>
+      </div>
+
+      <div class="row g-4 gallery">
+        <div class="col-md-4">
+          <div class="g-item">
+            <img src="https://images.unsplash.com/photo-1558944351-c7e6bc3f0764?auto=format&fit=crop&w=900&q=70" alt="Airport check-in">
+            <span class="g-caption">Airport check-in</span>
+            <button class="btn-view" data-img="https://images.unsplash.com/photo-1558944351-c7e6bc3f0764?auto=format&fit=crop&w=1600&q=80">View</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="g-item">
+            <img src="https://unsplash.com/photos/a-cat-sitting-in-front-of-an-airplane-window-tZmSDZ6LsI8" alt="Airline crate">
+            <span class="g-caption">Airline crate</span>
+            <button class="btn-view" data-img="https://unsplash.com/photos/a-cat-sitting-in-front-of-an-airplane-window-tZmSDZ6LsI8">View</button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="g-item">
+            <img src="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&w=900&q=70" alt="Comfort stop">
+            <span class="g-caption">Comfort stop</span>
+            <button class="btn-view" data-img="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&w=1600&q=80">View</button>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="g-item">
+            <img src="https://images.unsplash.com/photo-1601758123927-196c3c687e4b?auto=format&fit=crop&w=1200&q=70" alt="On the road">
+            <span class="g-caption">On the road</span>
+            <button class="btn-view" data-img="https://images.unsplash.com/photo-1601758123927-196c3c687e4b?auto=format&fit=crop&w=1800&q=80">View</button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="g-item">
+            <img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=1200&q=70" alt="Happy arrival">
+            <span class="g-caption">Happy arrival</span>
+            <button class="btn-view" data-img="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=1800&q=80">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="section parallax" style="background-image:url('https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1800&q=80')" data-parallax-speed="0.25">
+    <div class="container container-narrow">
+      <div class="row g-4 align-items-stretch">
+        <div class="col-lg-7">
+          <div class="contact-card h-100 p-4">
+            <h3 class="text-white mb-1">Request a Quote</h3>
+            <p class="text-secondary">Tell us about your pet and route — we’ll plan everything.</p>
+            <form id="quoteForm" novalidate>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-white-50">Name</label>
+                  <input type="text" class="form-control bg-transparent text-white" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-white-50">Phone</label>
+                  <input type="tel" class="form-control bg-transparent text-white" pattern="[0-9]{10}" placeholder="10-digit" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-danger-50">From City</label>
+                  <input type="text" class="form-control bg-transparent text-white" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-danger-50">To City / Country</label>
+                  <input type="text" class="form-control bg-transparent text-white" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label text-white-50">Pet Details & Notes</label>
+                  <textarea rows="3" class="form-control bg-transparent text-white" placeholder="Breed, age, crate size if known, preferred travel date..." required></textarea>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <button class="btn btn-glow" type="submit">Send Request</button>
+                <a href="mailto:relocation@thepetnest.com" class="btn btn-ghost">Email Us</a>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="contact-card h-100 p-4">
+            <h5 class="text-danger mb-2">Checklist</h5>
+            <ul class="list-checked text-danger">
+              <li>Updated vaccination records</li>
+              <li>Airline-approved crate (if flying)</li>
+              <li>Health certificate & microchip (as required)</li>
+              <li>Comfort item (blanket/toy)</li>
+              <li>Feeding & hydration plan</li>
+            </ul>
+            <hr class="border-secondary">
+            <h6 class="text-white">Quick Contact</h6>
+            <p class="mb-1 text-secondary"><strong class="text-white">Email:</strong> relocation@thepetnest.com</p>
+            <p class="mb-0 text-secondary"><strong class="text-white">Phone:</strong> +91 12345 67890</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL (Gallery Viewer) -->
+  <div class="modal fade" id="imgModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content bg-black">
+        <div class="modal-body p-0">
+          <img id="modalImg" src="" class="w-100" alt="Preview">
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACK TO TOP -->
+  <button id="backTop" title="Back to top">↑</button>
+
+  <footer class="text-center py-4">
+    <small>&copy; 2025 ThePetNest — All rights reserved</small>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Smooth anchor buttons inside options cards
+    $(document).on('click','[data-target]',function(){
+      const target = $(this).attr('data-target');
+      const el = document.querySelector(target);
+      if(el){ window.scrollTo({top: el.offsetTop - 70, behavior:'smooth'}); }
+    });
+
+    // Hero intro animation
+    $(function(){
+      $('.headline').animate({opacity:1, top:0}, 800);
+      $('.sub').delay(150).animate({opacity:1}, 900);
+      $('.hero .d-flex').delay(250).animate({opacity:1}, 900);
+    });
+
+    // Reveal-on-scroll for step cards
+    function revealOnScroll(){
+      $('.step-card').each(function(){
+        const offsetTop = $(this).offset().top;
+        const winBottom = $(window).scrollTop() + $(window).height();
+        if(winBottom > offsetTop + 40 && $(this).css('opacity') < 1){
+          $(this).animate({opacity:1, translateY:0}, {duration:700, step: function(now,fx){
+            if(fx.prop === 'translateY'){ $(this).css('transform','translateY('+(25 - 25*now)+ 'px)'); }
+          }});
+        }
+      });
+    }
+    $(window).on('scroll resize', revealOnScroll);
+    revealOnScroll();
+
+    // Parallax effect (soft)
+    function parallaxUpdate(){
+      $('[data-parallax-speed]').each(function(){
+        const speed = parseFloat($(this).attr('data-parallax-speed') || 0.3);
+        const y = Math.round((window.scrollY - this.offsetTop) * speed);
+        $(this).css('background-position','center ' + (y * -1) + 'px');
+      });
+    }
+    document.addEventListener('scroll', parallaxUpdate, {passive:true});
+    parallaxUpdate();
+
+    // Back-to-top visibility + action
+    const $top = $('#backTop');
+    $(window).on('scroll', function(){
+      if (window.scrollY > 300) $top.addClass('show'); else $top.removeClass('show');
+    });
+    $top.on('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+    // Gallery modal viewer
+    const imgModal = new bootstrap.Modal('#imgModal');
+    $('.btn-view, .gallery .g-item img').on('click', function(){
+      const src = $(this).attr('data-img') || $(this).attr('src');
+      $('#modalImg').attr('src', src);
+      imgModal.show();
+    });
+
+    // Basic form validation feedback
+    $('#quoteForm').on('submit', function(e){
+      e.preventDefault();
+      if(this.checkValidity()){
+        // Simple toast-like feedback
+        const ok = $('<div class="position-fixed bottom-0 end-0 p-3" style="z-index:1080;"><div class="toast align-items-center text-white bg-success border-0 show"><div class="d-flex"><div class="toast-body">Request sent! We will contact you shortly. 🐾</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div></div>');
+        $('body').append(ok);
+        setTimeout(()=> ok.fadeOut(400, ()=> ok.remove()), 2500);
+        this.reset();
+      }else{
+        this.classList.add('was-validated');
+      }
+    });
+  </script>
+</body>
+</html>

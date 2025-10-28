@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThePetNest - Online Veterinary Service</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d6efd;
+            --secondary: #6c757d;
+            --success: #198754;
+            --info: #0dcaf0;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --petnest-blue: #1e40af;
+            --petnest-light-blue: #3b82f6;
+            --petnest-green: #10b981;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f8fafc;
+        }
+        
+        /* Header Styles */
+        .top-header {
+            background-color: var(--petnest-blue);
+            color: white;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+        
+        .main-header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--petnest-blue);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--petnest-green);
+        }
+        
+        .nav-link {
+            color: #374151 !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: var(--petnest-blue) !important;
+        }
+        
+        .btn-petnest {
+            background-color: var(--petnest-blue);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-petnest:hover {
+            background-color: var(--petnest-light-blue);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(rgba(30, 64, 175, 0.8), rgba(30, 64, 175, 0.9)), url('https://images.unsplash.com/photo-1596272875729-ed2ff7d6d9c5?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') center/cover no-repeat;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        /* Services Section */
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-icon {
+            font-size: 40px;
+            color: var(--petnest-blue);
+            margin-bottom: 20px;
+        }
+        
+        /* How it Works */
+        .how-it-works {
+            background-color: #f1f5f9;
+            padding: 80px 0;
+        }
+        
+        .step-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: 100%;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--petnest-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 auto 20px;
+        }
+        
+        /* Testimonials */
+        .testimonial-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            height: 100%;
+        }
+        
+        .testimonial-text {
+            position: relative;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+        
+        .testimonial-text:before {
+            content: """;
+            position: absolute;
+            top: -20px;
+            left: 10px;
+            font-size: 60px;
+            color: var(--petnest-light-blue);
+            font-family: Arial;
+        }
+        
+        /* FAQ Section */
+        .faq-item {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 20px;
+            background: var(--petnest-blue);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .faq-answer.show {
+            padding: 20px;
+            max-height: 300px;
+        }
+        
+        /* Footer */
+        footer {
+            background: #0f172a;
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .social-icons a {
+            color: white;
+            font-size: 20px;
+            margin-right: 15px;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            color: var(--petnest-light-blue);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 60px 0;
+            }
+            
+            .hero-title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="container">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <span><i class="fas fa-phone-alt me-2"></i>+91 98765 43210</span>
+                    <span class="ms-3"><i class="fas fa-envelope me-2"></i>care@thepetnest.com</span>
+                </div>
+                <div>
+                    <span><i class="fas fa-map-marker-alt me-2"></i>Find a Center</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Header -->
+    <header class="main-header sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand logo" href="#">
+                        <i class="fas fa-paw me-2"></i>ThePet<span>Nest</span>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Services</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">Online Vet</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">About Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contact</a>
+                            </li>
+                            <li class="nav-item ms-lg-3">
+                                <a class="btn btn-petnest" href="#">Book Appointment</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="hero-title fw-bold mb-4">Online Veterinary Consultation</h1>
+                    <p class="lead mb-5">Connect with licensed veterinarians from the comfort of your home. Get expert advice, prescriptions, and treatment plans for your pets.</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="#" class="btn btn-lg btn-light px-4 py-3 fw-bold">Book Video Consultation</a>
+                        <a href="#" class="btn btn-lg btn-outline-light px-4 py-3 fw-bold">Chat with Vet</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-3">Our Veterinary Services</h2>
+                    <p class="text-muted">We offer comprehensive online veterinary services to keep your pets healthy and happy</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Video Consultation</h4>
+                        <p class="text-muted">Face-to-face online consultations with experienced veterinarians for personalized pet care advice.</p>
+                        <a href="#" class="btn btn-outline-primary mt-3">Learn More</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-comment-medical"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Chat Consultation</h4>
+                        <p class="text-muted">Quick text-based consultations for non-emergency questions and follow-up appointments.</p>
+                        <a href="#" class="btn btn-outline-primary mt-3">Learn More</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-prescription"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">E-Prescriptions</h4>
+                        <p class="text-muted">Get digital prescriptions that can be fulfilled at your local pharmacy or our online pet pharmacy.</p>
+                        <a href="#" class="btn btn-outline-primary mt-3">Learn More</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Health Plans</h4>
+                        <p class="text-muted">Subscribe to personalized health plans for ongoing care and preventive treatments.</p>
+                        <a href="#" class="btn btn-outline-primary mt-3">Learn More</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-notes-medical"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Second Opinions</h4>
+                        <p class="text-muted">Get expert second opinions on diagnoses and treatment plans for your pet's conditions.</p>
+                        <a href="#" class="btn btn-outline-primary mt-3">Learn More</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-ambulance"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3">Emergency Advice</h4>
+                        <p class="text-muted">Immediate guidance for pet emergencies before you can reach a physical veterinary clinic.</p>
+                        <a href="#" class="btn btn-outline-primary mt-3">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="how-it-works">
+        <div class="container py-5">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-3">How Online Vet Consultation Works</h2>
+                    <p class="text-muted">Getting veterinary care for your pet has never been easier</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h4 class="fw-bold mb-3">Book an Appointment</h4>
+                        <p class="text-muted">Choose between video or chat consultation and select a convenient time slot.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h4 class="fw-bold mb-3">Share Medical History</h4>
+                        <p class="text-muted">Upload your pet's medical records, photos, or videos before the consultation.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h4 class="fw-bold mb-3">Consult with Vet</h4>
+                        <p class="text-muted">Connect with a licensed veterinarian at your scheduled time via video or chat.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-3">
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h4 class="fw-bold mb-3">Receive Treatment Plan</h4>
+                        <p class="text-muted">Get a diagnosis, treatment plan, and prescriptions delivered to your email.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="#" class="btn btn-petnest btn-lg px-5 py-3">Book Now</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-3">Affordable Pricing Plans</h2>
+                    <p class="text-muted">Choose the consultation type that best fits your needs</p>
+                </div>
+            </div>
+            
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-4">
+                    <div class="service-card p-5 text-center">
+                        <h4 class="fw-bold mb-3">Video Consultation</h4>
+                        <div class="price display-4 fw-bold text-primary">₹499</div>
+                        <p class="text-muted mb-4">per session</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> 30-minute video call</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Detailed diagnosis</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> E-prescription</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Follow-up advice via chat</li>
+                        </ul>
+                        <a href="#" class="btn btn-primary w-100 py-3 fw-bold">Book Video Call</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="service-card p-5 text-center border border-primary">
+                        <span class="badge bg-primary mb-3 py-2 px-3">Most Popular</span>
+                        <h4 class="fw-bold mb-3">Chat Consultation</h4>
+                        <div class="price display-4 fw-bold text-primary">₹299</div>
+                        <p class="text-muted mb-4">per session</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Unlimited chat for 24 hours</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Quick responses</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Basic advice and guidance</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Follow-up questions included</li>
+                        </ul>
+                        <a href="#" class="btn btn-primary w-100 py-3 fw-bold">Start Chat</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="service-card p-5 text-center">
+                        <h4 class="fw-bold mb-3">Health Membership</h4>
+                        <div class="price display-4 fw-bold text-primary">₹999</div>
+                        <p class="text-muted mb-4">per month</p>
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> 4 video consultations</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Unlimited chat support</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> 10% off on medicines</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Priority support</li>
+                        </ul>
+                        <a href="#" class="btn btn-outline-primary w-100 py-3 fw-bold">Subscribe Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-5 bg-light">
+        <div class="container py-5">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-3">What Pet Parents Say</h2>
+                    <p class="text-muted">Read about experiences from our happy customers</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text mb-4">
+                            <p>"The online consultation was a lifesaver when my dog developed skin allergies. The vet was knowledgeable and even followed up the next day to check on progress."</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User" class="rounded-circle me-3" width="50" height="50">
+                            <div>
+                                <h6 class="fw-bold mb-0">Priya S.</h6>
+                                <small class="text-muted">Mumbai</small>
+                            </div>
+                            <div class="ms-auto">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text mb-4">
+                            <p>"I was worried about taking my anxious cat to the clinic. The video consultation was perfect! The vet was patient and gave detailed advice on managing her stress."</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="rounded-circle me-3" width="50" height="50">
+                            <div>
+                                <h6 class="fw-bold mb-0">Rahul M.</h6>
+                                <small class="text-muted">Delhi</small>
+                            </div>
+                            <div class="ms-auto">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text mb-4">
+                            <p>"The chat consultation helped me get immediate advice when my puppy had diarrhea at night. The vet was responsive and guided me through first aid steps."</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="User" class="rounded-circle me-3" width="50" height="50">
+                            <div>
+                                <h6 class="fw-bold mb-0">Anjali K.</h6>
+                                <small class="text-muted">Bangalore</small>
+                            </div>
+                            <div class="ms-auto">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5">
+        <div class="container py-5">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-3">Frequently Asked Questions</h2>
+                    <p class="text-muted">Find answers to common questions about our online vet services</p>
+                </div>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            How does online veterinary consultation work? <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our online vet consultation process is simple: book an appointment, share your pet's medical history, connect with a vet via video or chat, and receive a treatment plan. You can choose between video calls or text-based chat consultations based on your needs.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            Can online vets prescribe medications? <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, our licensed veterinarians can prescribe medications for your pet when appropriate. After the consultation, you'll receive an e-prescription that can be fulfilled at your local pharmacy or through our online pet pharmacy.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            What conditions can be treated through online consultation? <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Online consultations are suitable for many non-emergency conditions like skin issues, minor injuries, behavioral problems, dietary advice, and follow-up care. For emergencies like poisoning, trauma, or difficulty breathing, we recommend visiting a physical clinic immediately.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            How do I prepare for a video consultation? <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>To prepare for your video consultation, have your pet nearby in a well-lit area. Gather any previous medical records, note down symptoms and their duration, and prepare questions you want to ask. Ensure you have a stable internet connection for the video call.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            What if I need to cancel or reschedule my appointment? <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>You can cancel or reschedule your appointment up to 2 hours before the scheduled time at no charge. Late cancellations may incur a fee. You can manage your appointments through your account dashboard on our website or mobile app.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8 mb-4 mb-lg-0">
+                    <h2 class="fw-bold mb-3">Ready to Consult with a Vet?</h2>
+                    <p class="lead mb-0">Book an online consultation now and get expert care for your pet from the comfort of your home.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="#" class="btn btn-light btn-lg px-5 py-3 fw-bold">Book Appointment</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <a class="navbar-brand logo text-white mb-4" href="#">
+                        <i class="fas fa-paw me-2"></i>ThePet<span>Nest</span>
+                    </a>
+                    <p class="mb-4">Providing quality veterinary care through innovative online solutions for pet parents across India.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="fw-bold mb-4">Services</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Online Consultation</a></li>
+                        <li><a href="#">Video Call</a></li>
+                        <li><a href="#">Chat with Vet</a></li>
+                        <li><a href="#">E-Prescriptions</a></li>
+                        <li><a href="#">Health Plans</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-4">
+                    <h5 class="fw-bold mb-4">Company</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Our Team</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 col-md-4">
+                    <h5 class="fw-bold mb-4">Contact Info</h5>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone-alt me-2"></i> +91 98765 43210</li>
+                        <li><i class="fas fa-envelope me-2"></i> care@thepetnest.com</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Pet Care Road, Mumbai, India</li>
+                    </ul>
+
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-5">
+            
+            <div class="text-center">
+                <p class="mb-0">&copy; 2023 ThePetNest. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle FAQ answers
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            answer.classList.toggle('show');
+            
+            const icon = element.querySelector('i');
+            if (answer.classList.contains('show')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+        
+        // Initialize all FAQ items to be closed
+        document.querySelectorAll('.faq-answer').forEach(answer => {
+            answer.classList.remove('show');
+        });
+    </script>
+</body>
+</html>

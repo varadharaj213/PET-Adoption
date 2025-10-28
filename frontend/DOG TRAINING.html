@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ThePetNest — Dog Training</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+
+  <style>
+    :root {
+      --brand-1: #223a66;
+      --brand-2: #2b3b6b;
+      --accent: #ff7a18; /* button gradient start */
+      --accent-2: #ff3d54; /* button gradient end */
+      --glass-bg: rgba(255,255,255,0.12);
+      --glass-brd: rgba(255,255,255,0.3);
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #f7f9fc;
+      color: #0f172a;
+      scroll-behavior: smooth;
+    }
+
+    /* Navbar */
+    .navbar { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); }
+    .navbar .nav-link { color: #f1f5f9; }
+    .navbar .nav-link.active, .navbar .nav-link:hover { color: #ffe08a; }
+
+    /* Dark mode */
+    body.dark { background: #0b1220; color: #e5e7eb; }
+    body.dark .navbar { background: rgba(15,23,42,0.8); }
+    body.dark .section-title { color: #e2e8f0; }
+    body.dark .card, body.dark .pricing-card { background: #0f172a; color: #e5e7eb; }
+    body.dark .footer { background: #0b1220; }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #fff;
+      overflow: hidden;
+      background: 
+        linear-gradient(rgba(6,11,25,0.55), rgba(6,11,25,0.55)),
+        url('https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+    }
+    .hero .content { z-index: 2; }
+    .hero h1 { font-weight: 800; letter-spacing: -0.02em; font-size: clamp(2rem, 4vw + 1rem, 4rem); }
+    .hero p { max-width: 680px; margin: 10px auto 0; opacity: 0.95; }
+
+    /* Hero floating badges */
+    .badge-floater {
+      position: absolute; inset: auto auto 10% 6%;
+      display: flex; gap: 12px; align-items: center;
+      padding: 12px 16px; border-radius: 14px;
+      background: var(--glass-bg); color: #fff; border: 1px solid var(--glass-brd);
+      box-shadow: 0 6px 30px rgba(0,0,0,0.25);
+    }
+    .badge-floater img { width: 40px; height: 40px; object-fit: cover; border-radius: 10px; }
+
+    /* Buttons */
+    .btn-gradient {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border: none; color: #fff; font-weight: 700; letter-spacing: 0.2px;
+      padding: 12px 24px; border-radius: 999px; box-shadow: 0 8px 24px rgba(255,61,84,0.35);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .btn-gradient:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,61,84,0.45); }
+    .btn-ghost { border: 1.5px solid rgba(255,255,255,0.7); color: #fff; border-radius: 999px; padding: 12px 24px; }
+
+    /* Section utilities */
+    .section { padding: 80px 0; }
+    .section-title { font-weight: 800; letter-spacing: -0.02em; margin-bottom: 18px; }
+    .section-sub { color: #475569; max-width: 720px; }
+    body.dark .section-sub { color: #94a3b8; }
+
+    /* Services grid */
+    .feature-card { border: 0; border-radius: 18px; overflow: hidden; height: 100%; }
+    .feature-card .image { height: 180px; background-size: cover; background-position: center; }
+    .feature-card .card-body { padding: 18px; }
+
+    /* Gallery */
+    .masonry { columns: 1; column-gap: 1rem; }
+    @media (min-width: 576px){ .masonry { columns: 2; } }
+    @media (min-width: 992px){ .masonry { columns: 3; } }
+    .masonry a { display: block; margin-bottom: 1rem; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+    .masonry img { width: 100%; height: auto; display: block; }
+
+    /* Stats */
+    .stats { background: linear-gradient(90deg, #172554, #0ea5e9); color: #fff; }
+    .stat-box { text-align: center; }
+    .stat-number { font-size: clamp(2rem, 3vw + 1rem, 3.2rem); font-weight: 800; }
+
+    /* Trainers */
+    .trainer-card { border: 0; border-radius: 18px; overflow: hidden; text-align: center; background: #fff; }
+    .trainer-card img { width: 100%; height: 220px; object-fit: cover; }
+    .trainer-card .card-body { padding: 16px; }
+
+    /* Pricing */
+    .pricing { background: #0b1220 url('https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=1600&q=80') center/cover fixed; }
+    .pricing .overlay { background: rgba(11, 18, 32, 0.7); }
+    .pricing-card { border-radius: 18px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(8px); }
+
+    /* Footer */
+    .footer { background: #0b1220 url('https://images.unsplash.com/photo-1507149833265-60c372daea22?auto=format&fit=crop&w=1600&q=70') center/cover no-repeat; color: #e5e7eb; }
+    .footer .overlay { background: rgba(11,18,32,0.82); }
+
+    /* Floating action button */
+    .fab-book {
+      position: fixed; right: 18px; bottom: 18px; z-index: 999;
+      width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer;
+      display: grid; place-items: center; color: #fff; font-size: 22px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+
+    /* Light tweaks */
+    .shadow-soft { box-shadow: 0 12px 30px rgba(2, 8, 23, 0.08); }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">ThePetNest</a>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav align-items-center">
+        <li class="nav-item"><a class="nav-link" href="dog-training.html">Dog Training</a></li>
+        <li class="nav-item"><a class="nav-link" href="pet-relocation.html">Pet Relocation</a></li>
+        <li class="nav-item"><a class="nav-link" href="consult-vet.html">Consult a Vet</a></li>
+        <li class="nav-item"><a class="nav-link" href="dog-walking.html">Dog Walking</a></li>
+        <li class="nav-item"><a class="nav-link" href="pet-insurance.html">Pet Insurance</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Hero -->
+  <header class="hero" id="home">
+    <div class="content container" data-aos="fade-up" data-aos-duration="800">
+      <h1>Professional Dog Training, Made Fun 🐾</h1>
+      <p class="lead">Obedience, behavior correction, puppy socialization, and custom 1:1 sessions at your home — with certified trainers you can trust.</p>
+      <div class="d-flex gap-3 justify-content-center mt-3">
+        <a href="#services" class="btn btn-gradient">Explore Services</a>
+        <button class="btn btn-ghost" data-bs-toggle="modal" data-bs-target="#bookModal">Book a Session</button>
+      </div>
+    </div>
+
+    <!-- Floating badge with online image -->
+    <div class="badge-floater d-none d-md-flex" data-aos="zoom-in" data-aos-delay="300">
+      <img loading="lazy" src="https://images.unsplash.com/photo-1505628346881-b72b27e84530?auto=format&fit=crop&w=200&q=70" alt="Happy dog"/>
+      <div>
+        <div class="fw-bold">9,800+ Pets Trained</div>
+        <small>Avg. rating 4.9/5 ⭐</small>
+      </div>
+    </div>
+  </header>
+
+  <!-- Services -->
+  <section id="services" class="section">
+    <div class="container">
+      <div class="text-center mb-4" data-aos="fade-up">
+        <h2 class="section-title">What We Offer</h2>
+        <p class="section-sub mx-auto">Reward-based, science-backed training tailored to your dog’s breed, age and personality.</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
+          <div class="card feature-card shadow-soft h-100">
+            <div class="image" style="background-image:url('https://images.unsplash.com/photo-1494256997604-768d1f608cac?auto=format&fit=crop&w=1200&q=80');"></div>
+            <div class="card-body">
+              <h5 class="card-title">Basic Obedience</h5>
+              <p class="card-text">Sit, stay, come, down, heel & leash manners with positive reinforcement.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="card feature-card shadow-soft h-100">
+            <div class="image" style="background-image:url('https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=1200&q=80');"></div>
+            <div class="card-body">
+              <h5 class="card-title">Puppy Socialization</h5>
+              <p class="card-text">Build confidence, reduce fear, and encourage good habits from day one.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="card feature-card shadow-soft h-100">
+            <div class="image" style="background-image:url('https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1200&q=80');"></div>
+            <div class="card-body">
+              <h5 class="card-title">Behavior Correction</h5>
+              <p class="card-text">Address barking, chewing, jumping, separation anxiety & more with care.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats band with CountUp -->
+  <section class="stats section py-5">
+    <div class="container">
+      <div class="row g-4 justify-content-center">
+        <div class="col-6 col-md-3 stat-box" data-aos="fade-up">
+          <div class="stat-number" data-countup="9800">0</div>
+          <div>Pets Trained</div>
+        </div>
+        <div class="col-6 col-md-3 stat-box" data-aos="fade-up" data-aos-delay="100">
+          <div class="stat-number" data-countup="4.9" data-decimals="1">0</div>
+          <div>Average Rating</div>
+        </div>
+        <div class="col-6 col-md-3 stat-box" data-aos="fade-up" data-aos-delay="200">
+          <div class="stat-number" data-countup="35">0</div>
+          <div>Cities Covered</div>
+        </div>
+        <div class="col-6 col-md-3 stat-box" data-aos="fade-up" data-aos-delay="300">
+          <div class="stat-number" data-countup="120">0</div>
+          <div>Certified Trainers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery with GLightbox -->
+  <section id="gallery" class="section">
+    <div class="container">
+      <div class="text-center mb-4" data-aos="fade-up">
+        <h2 class="section-title">Moments from Training</h2>
+        <p class="section-sub mx-auto">A peek into our happy sessions — click any photo to view full size.</p>
+      </div>
+
+      <div class="masonry" id="galleryGrid">
+        <a href="https://images.unsplash.com/photo-1598133894008-9930e1c7aa1f?auto=format&fit=crop&w=500&q=80" class="glightbox" data-gallery="dogs">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1558944351-c7e6bc3f0764?auto=format&fit=crop&w=800&q=70" alt="Training on leash">
+        </a>
+        <a href="https://images.unsplash.com/photo-1507149833265-60c372daea22?auto=format&fit=crop&w=1600&q=80" class="glightbox" data-gallery="dogs">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1507149833265-60c372daea22?auto=format&fit=crop&w=900&q=70" alt="Cute puppy">
+        </a>
+        <a href="https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80" class="glightbox" data-gallery="dogs">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=900&q=70" alt="Dog running">
+        </a>
+        <a href="https://images.unsplash.com/photo-1525253086316-d0c936c814f8?auto=format&fit=crop&w=1600&q=80" class="glightbox" data-gallery="dogs">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1525253086316-d0c936c814f8?auto=format&fit=crop&w=900&q=70" alt="Playing fetch">
+        </a>
+        <a href="https://images.unsplash.com/photo-1494256997604-768d1f608cac?auto=format&fit=crop&w=1600&q=80" class="glightbox" data-gallery="dogs">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1494256997604-768d1f608cac?auto=format&fit=crop&w=900&q=70" alt="Golden retriever">
+        </a>
+        <a href="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=1600&q=80" class="glightbox" data-gallery="dogs">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=900&q=70" alt="Puppy nose">
+        </a>
+        <a href="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&w=1600&q=80" class="glightbox" data-gallery="dogs">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&w=900&q=70" alt="Dog with trainer">
+        </a>
+        <a href="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&w=1600&q=80" class="glightbox" data-gallery="dogs">
+          <img loading="lazy" src="https://images.unsplash.com/photo-1526676317770-cab643ac31ea?auto=format&fit=crop&w=900&q=70" alt="Treat training">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trainers (Swiper carousel) -->
+  <section id="trainers" class="section">
+    <div class="container">
+      <div class="text-center mb-4" data-aos="fade-up">
+        <h2 class="section-title">Meet Our Trainers</h2>
+        <p class="section-sub mx-auto">Friendly, certified and experienced — your dog is in safe hands.</p>
+      </div>
+
+      <div class="swiper" data-aos="fade-up">
+        <div class="swiper-wrapper">
+          <!-- Trainer 1 -->
+          <div class="swiper-slide">
+            <div class="trainer-card shadow-soft">
+              <img loading="lazy" src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=500&q=80" alt="Trainer with dog">
+              <div class="card-body">
+                <h5 class="mb-1">Aarav Menon</h5>
+                <small class="text-muted">Canine Behavior Specialist</small>
+              </div>
+            </div>
+          </div>
+          <!-- Trainer 2 -->
+          <div class="swiper-slide">
+            <div class="trainer-card shadow-soft">
+              <img loading="lazy" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=70" alt="Female trainer with dog">
+              <div class="card-body">
+                <h5 class="mb-1">Nancy</h5>
+                <small class="text-muted">Puppy & Obedience Coach</small>
+              </div>
+            </div>
+          </div>
+          <!-- Trainer 3 -->
+          <div class="swiper-slide">
+            <div class="trainer-card shadow-soft">
+              <img loading="lazy" src="https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=1000&q=70" alt="Trainer outdoors">
+              <div class="card-body">
+                <h5 class="mb-1">Rohit Verma</h5>
+                <small class="text-muted">Agility & Tricks Expert</small>
+              </div>
+            </div>
+          </div>
+          <!-- Trainer 4 -->
+          <div class="swiper-slide">
+            <div class="trainer-card shadow-soft">
+              <img loading="lazy" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=500&q=80" alt="Trainer portrait">
+              <div class="card-body">
+                <h5 class="mb-1">Eliza</h5>
+                <small class="text-muted">Reactive Dog Specialist</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- If needed -->
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="pricing section text-white position-relative">
+    <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="container position-relative">
+      <div class="text-center mb-4" data-aos="fade-up">
+        <h2 class="section-title">Simple, Transparent Pricing</h2>
+        <p class="section-sub mx-auto text-white-50">Pay per session or save with packages. All prices include trainer travel.</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
+          <div class="pricing-card p-4 text-center text-white" style="background: rgba(255,255,255,0.08);">
+            <h5>Starter</h5>
+            <h2 class="my-3">₹799</h2>
+            <p class="text-white-50">Single private session (60–90 min)</p>
+            <ul class="list-unstyled small text-white-50">
+              <li>Basic commands</li>
+              <li>Leash manners</li>
+              <li>Parent coaching</li>
+            </ul>
+            <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#bookModal">Book Now</button>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="pricing-card p-4 text-center text-white" style="background: rgba(255,255,255,0.12);">
+            <h5>Popular — 4 Sessions</h5>
+            <h2 class="my-3">₹2,999</h2>
+            <p class="text-white-50">Great for puppies & foundation skills</p>
+            <ul class="list-unstyled small text-white-50">
+              <li>Customized plan</li>
+              <li>WhatsApp support</li>
+              <li>Progress tracking</li>
+            </ul>
+            <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#bookModal">Book Package</button>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="pricing-card p-4 text-center text-white" style="background: rgba(255,255,255,0.16);">
+            <h5>Behavior Program</h5>
+            <h2 class="my-3">₹5,499</h2>
+            <p class="text-white-50">For reactivity, anxiety & complex issues</p>
+            <ul class="list-unstyled small text-white-50">
+              <li>Assessment report</li>
+              <li>Trainer & vet liaison</li>
+              <li>Maintenance plan</li>
+            </ul>
+            <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#bookModal">Start Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="container">
+      <div class="text-center mb-4" data-aos="fade-up">
+        <h2 class="section-title">FAQs</h2>
+        <p class="section-sub mx-auto">If you have any other question, tap the chat or call us.</p>
+      </div>
+      <div class="accordion shadow-soft" id="faqAcc" data-aos="fade-up">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="f1">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fc1">How long until I see results?</button>
+          </h2>
+          <div id="fc1" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+            <div class="accordion-body">Small improvements often appear after 1–2 sessions; consistent practice yields reliable results within a few weeks.</div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="f2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#fc2">Do you handle aggressive behavior?</button>
+          </h2>
+          <div id="fc2" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+            <div class="accordion-body">Yes — we start with a safety-first assessment and create a tailored plan. We collaborate with veterinary behaviorists when needed.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer text-white pt-5 position-relative">
+    <div class="overlay position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="container position-relative">
+      <div class="row align-items-center gy-4">
+        <div class="col-lg-6" data-aos="fade-right">
+          <h4 class="fw-bold">Ready to build good habits that last?</h4>
+          <p class="text-white-50 mb-3">Book a session today and see the difference positive training can make.</p>
+          <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#bookModal">Book a Training Session</button>
+        </div>
+        <div class="col-lg-6 text-lg-end" data-aos="fade-left">
+          <div class="mb-2">
+            <a class="text-warning me-3" href="#"><i class="fab fa-facebook fa-lg"></i></a>
+            <a class="text-warning me-3" href="#"><i class="fab fa-instagram fa-lg"></i></a>
+            <a class="text-warning" href="#"><i class="fab fa-twitter fa-lg"></i></a>
+          </div>
+          <small class="d-block">&copy; 2025 ThePetNest — All rights reserved</small>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Book Button -->
+  <button class="fab-book" title="Book a session" data-bs-toggle="modal" data-bs-target="#bookModal"><i class="fa-solid fa-bone"></i></button>
+
+  <!-- Booking Modal -->
+  <div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Book a Training Session</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="bookForm" novalidate>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Your Name</label>
+                <input type="text" class="form-control" name="name" required>
+                <div class="invalid-feedback">Please enter your name.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                <input type="tel" class="form-control" name="phone" pattern="[0-9]{10}" placeholder="10-digit" required>
+                <div class="invalid-feedback">Enter a valid 10-digit phone.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="city" required>
+                <div class="invalid-feedback">City is required.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Dog's Age</label>
+                <select class="form-select" name="age" required>
+                  <option value="">Select</option>
+                  <option>Puppy (0-6 mo)</option>
+                  <option>Young (6-18 mo)</option>
+                  <option>Adult (1.5-7 yrs)</option>
+                  <option>Senior (7+ yrs)</option>
+                </select>
+                <div class="invalid-feedback">Please select one.</div>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Goals</label>
+                <textarea class="form-control" rows="3" name="goals" placeholder="Ex: loose-leash walking, recall, stop barking..." required></textarea>
+                <div class="invalid-feedback">Tell us your goals.</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-gradient">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast (submission feedback) -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+    <div id="submitToast" class="toast align-items-center text-white bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">Request received! We will call you shortly. 🐶</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/countup.js@2.8.0/dist/countUp.umd.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+  <script>
+    // AOS animations
+    AOS.init({ once: true, duration: 700, offset: 80 });
+
+    // GLightbox for gallery
+    const lightbox = GLightbox({ selector: '.glightbox' });
+
+    // Swiper for trainers
+    const trainerSwiper = new Swiper('.swiper', {
+      slidesPerView: 1,
+      spaceBetween: 16,
+      pagination: { el: '.swiper-pagination', clickable: true },
+      breakpoints: { 576: { slidesPerView: 2 }, 992: { slidesPerView: 3 } }
+    });
+
+    // CountUp stats when in view
+    const counters = document.querySelectorAll('[data-countup]');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const endVal = parseFloat(el.getAttribute('data-countup'));
+          const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+          const c = new countUp.CountUp(el, endVal, { duration: 1.8, decimalPlaces: decimals });
+          if (!c.error) { c.start(); io.unobserve(el); }
+        }
+      });
+    }, { threshold: 0.6 });
+    counters.forEach(c => io.observe(c));
+
+    // Dark mode toggle + persist
+    const modeToggle = document.getElementById('modeToggle');
+    const applyMode = () => {
+      const m = localStorage.getItem('mode') || 'light';
+      document.body.classList.toggle('dark', m === 'dark');
+      modeToggle.textContent = m === 'dark' ? '☀️' : '🌙';
+    };
+    applyMode();
+    modeToggle.addEventListener('click', () => {
+      const m = document.body.classList.contains('dark') ? 'light' : 'dark';
+      localStorage.setItem('mode', m); applyMode();
+    });
+
+    // Simple Bootstrap validation + toast feedback
+    const bookForm = document.getElementById('bookForm');
+    const submitToast = new bootstrap.Toast(document.getElementById('submitToast'));
+    bookForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!bookForm.checkValidity()) {
+        e.stopPropagation();
+      } else {
+        // Simulate submit success
+        submitToast.show();
+        bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
+        bookForm.reset();
+      }
+      bookForm.classList.add('was-validated');
+    });
+    
+  </script>
+</body>
+
+</html>

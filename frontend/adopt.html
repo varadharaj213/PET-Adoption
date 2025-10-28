@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adopt a Pet - PetNet</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { background: #f8f9fa; }
+    .filter-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 20px;
+    }
+    .pet-card {
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    .pet-card:hover { transform: translateY(-5px); }
+    .pet-card img { height: 220px; object-fit: cover; }
+    .pagination { justify-content: center; margin-top: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <!-- Sidebar Filters -->
+    <div class="col-md-3">
+      <div class="filter-box">
+        <h5>🔍 Filters</h5>
+        <button class="btn btn-outline-danger btn-sm w-100 mb-3" id="clearFilters">Clear All Filters</button>
+
+        <div class="mb-3">
+          <label class="form-label">Pet Type</label>
+          <select class="form-select" id="petType">
+            <option value="">All Pets</option>
+            <option value="dog">Dog</option>
+            <option value="cat">Cat</option>
+            <option value="bird">Bird</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">State</label>
+          <select class="form-select" id="state">
+            <option value="">All States</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="delhi">Delhi</option>
+            <option value="kerala">Kerala</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">City</label>
+          <select class="form-select" id="city">
+            <option value="">All Cities</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary w-100" id="applyFilters">Apply Filters</button>
+      </div>
+    </div>
+
+    <!-- Pet Listings -->
+    <div class="col-md-9">
+      <h3 class="mb-4">🐾 Pets Available for Adoption</h3>
+      <div class="row" id="petList"></div>
+
+      <!-- Pagination -->
+      <nav>
+        <ul class="pagination" id="pagination"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+  const pets = [
+    {type:"dog", state:"Tamil Nadu", city:"Chennai", name:"Buddy", age:"2 Years", gender:"Male", img:"https://placedog.net/400/300?id=11"},
+    {type:"dog", state:"Tamil Nadu", city:"Coimbatore", name:"Rocky", age:"4 Years", gender:"Male", img:"https://placedog.net/400/300?id=14"},
+    {type:"dog", state:"Tamil Nadu", city:"Madurai", name:"Bruno", age:"1 Year", gender:"Male", img:"https://placedog.net/400/300?id=17"},
+    {type:"dog", state:"Karnataka", city:"Bangalore", name:"Lucy", age:"1 Year", gender:"Female", img:"https://placedog.net/400/300?id=12"},
+    {type:"dog", state:"Karnataka", city:"Mysore", name:"Jack", age:"2 Years", gender:"Male", img:"https://placedog.net/400/300?id=18"},
+    {type:"dog", state:"Maharashtra", city:"Mumbai", name:"Max", age:"3 Years", gender:"Male", img:"https://placedog.net/400/300?id=13"},
+    {type:"dog", state:"Maharashtra", city:"Pune", name:"Toby", age:"4 Years", gender:"Male", img:"https://placedog.net/400/300?id=19"},
+    {type:"cat", state:"Tamil Nadu", city:"Chennai", name:"Milo", age:"6 Months", gender:"Female", img:"https://placecats.com/400/300"},
+    {type:"cat", state:"Tamil Nadu", city:"Salem", name:"Kitty", age:"1 Year", gender:"Female", img:"https://placecats.com/403/300"},
+    {type:"cat", state:"Karnataka", city:"Bangalore", name:"Snowy", age:"1 Year", gender:"Male", img:"https://placecats.com/401/300"},
+    {type:"cat", state:"Karnataka", city:"Mangalore", name:"Misty", age:"2 Years", gender:"Female", img:"https://placecats.com/404/300"},
+    {type:"cat", state:"Maharashtra", city:"Mumbai", name:"Luna", age:"2 Years", gender:"Female", img:"https://placecats.com/402/300"},
+    {type:"cat", state:"Maharashtra", city:"Pune", name:"Cleo", age:"3 Years", gender:"Female", img:"https://placecats.com/405/300"},
+  ];
+
+  const itemsPerPage = 9;
+  let currentPage = 1;
+  let filteredPets = pets;
+
+  // Cities per state
+  const stateCities = {
+    "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Salem", "Tiruchirappalli"],
+    "Karnataka": ["Bangalore", "Mysore", "Mangalore", "Hubli", "Belgaum"],
+    "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik", "Aurangabad"]
+  };
+
+  // Update city dropdown dynamically
+  $("#state").change(function() {
+    const selectedState = $(this).val();
+    const citySelect = $("#city");
+    citySelect.empty().append('<option value="">All Cities</option>');
+    if(selectedState && stateCities[selectedState]){
+      stateCities[selectedState].forEach(city => citySelect.append(`<option value="${city}">${city}</option>`));
+    }
+  });
+
+  function renderPets() {
+    $("#petList").empty();
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pagePets = filteredPets.slice(start, end);
+
+    if(pagePets.length === 0){
+        $("#petList").html('<p class="text-center">No pets found with this filter.</p>');
+    } else {
+        pagePets.forEach(p => {
+          $("#petList").append(`
+            <div class="col-md-4 mb-4 pet-card-item" data-type="${p.type}" data-state="${p.state}" data-city="${p.city}">
+              <div class="card pet-card">
+                <img src="${p.img}" class="card-img-top" alt="${p.type}">
+                <div class="card-body">
+                  <h5 class="card-title">${p.name}</h5>
+                  <p class="card-text">${p.age} • ${p.gender}<br>${p.city}, ${p.state}</p>
+                </div>
+              </div>
+            </div>
+          `);
+        });
+    }
+    renderPagination();
+  }
+
+  function renderPagination() {
+    $("#pagination").empty();
+    const totalPages = Math.ceil(filteredPets.length / itemsPerPage);
+    if(totalPages <= 1) return;
+
+    for(let i = 1; i <= totalPages; i++) {
+      $("#pagination").append(`
+        <li class="page-item ${i === currentPage ? "active" : ""}">
+          <a class="page-link" href="#">${i}</a>
+        </li>
+      `);
+    }
+
+    $(".page-link").click(function(e){
+      e.preventDefault();
+      currentPage = parseInt($(this).text());
+      renderPets();
+    });
+  }
+
+  // Apply filters
+  $("#applyFilters").click(function() {
+    const petType = $("#petType").val();
+    const state = $("#state").val();
+    const city = $("#city").val();
+
+    filteredPets = pets.filter(p => 
+      (petType === "" || p.type === petType) &&
+      (state === "" || p.state === state) &&
+      (city === "" || p.city === city)
+    );
+
+    currentPage = 1;
+    renderPets();
+  });
+
+  // Clear filters
+  $("#clearFilters").click(function() {
+    $("#petType").val("");
+    $("#state").val("");
+    $("#city").empty().append('<option value="">All Cities</option>');
+    filteredPets = pets;
+    currentPage = 1;
+    renderPets();
+  });
+
+  // Initial render
+  renderPets();
+});
+</script>
+
+</body>
+</html>

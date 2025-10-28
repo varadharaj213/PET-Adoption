@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThePetNest Navbar</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    .navbar {
+      background-color: #fff;
+    }
+    .navbar-nav .nav-link {
+      font-weight: 600;
+      color: #162a63 !important;
+    }
+    .btn-login {
+      background-color: orange;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Mega Menu */
+    .dropdown-menu.mega-menu {
+      width: 700px; /* adjust width */
+      right: 0;     /* align to right corner */
+      left: auto;
+      background-color: #162a63;
+      padding: 30px;
+      border-radius: 0;
+      border: none;
+    }
+    .mega-menu h6 {
+      color: #bfc8e2;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    .mega-menu a {
+      display: flex;
+      align-items: center;
+      color: white !important;
+      padding: 8px 0;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .mega-menu a span {
+      font-size: 22px;
+      margin-right: 10px;
+    }
+    .mega-menu a:hover {
+      color: #ffd700 !important;
+    }
+    .divider-col {
+      border-left: 1px solid #394b87;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow-sm">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-dark" href="#">ThePetNest</a>
+      <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+
+          <!-- Mega Menu Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="homeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Home Services
+            </a>
+            <div class="dropdown-menu mega-menu" aria-labelledby="homeDropdown">
+              <div class="row">
+                <!-- Home Services Column -->
+                <div class="col-md-4">
+                  <h6>Home Services</h6>
+                  <a href="#"><span>🛁</span> Pet Grooming</a>
+                  <a href="#"><span>👨‍⚕</span> Consult a Vet</a>
+                  <a href="#"><span>🐕</span> Dog Training</a>
+                  <a href="#"><span>🚶‍♂</span> Dog Walking</a>
+                  <a href="#"><span>✈</span> Pet Relocation</a>
+                  <a href="#"><span>💊</span> Pet Insurance</a>
+                </div>
+
+                <!-- ThePetNest Column -->
+                <div class="col-md-4 divider-col">
+                  <h6>ThePetNest</h6>
+                  <a href="#"><span>🛍</span> Online Pet Shop</a>
+                  <a href="#"><span>🏡</span> Re-home a pet</a>
+                  <a href="#"><span>ℹ</span> About Us</a>
+                  <a href="#"><span>🐾</span> Adopt a pet</a>
+                </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <!-- Store -->
+          <li class="nav-item">
+            <a class="nav-link" href="#">Shop</a>
+          </li>
+        </ul>
+
+        <!-- Login -->
+        <button class="btn btn-login ms-3">Login</button>
+      </div>
+    </div>
+  </nav>
+</body>
+</html>

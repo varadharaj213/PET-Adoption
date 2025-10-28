@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Adoption System - Shop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Pet Adoption</a>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="HOME.html">Home</a></li>
+      <li class="nav-item"><a class="nav-link active" href="shop.html">Shop</a></li>
+      <li class="nav-item"><a class="nav-link" href="cart.html">Cart <span id="cart-count" class="badge bg-warning">0</span></a></li>
+      <li class="nav-item"><a class="btn btn-light" href="login page.html">Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Shop -->
+<div class="container my-5">
+  <h2 class="text-center mb-4">🐾 Pet Shop</h2>
+  <div class="row">
+
+    <!-- Dog Food -->
+    <div class="col-md-4 mb-4"><div class="card h-100">
+      <img src="https://cdn.shopify.com/s/files/1/1709/7655/products/894308002169_1024x1024.png" class="card-img-top" alt="">
+      <div class="card-body"><h5>Dog Food</h5><p>Nutritious dry food for dogs.</p><p class="fw-bold">₹1500</p>
+        <button class="btn btn-primary add-to-cart" data-name="Dog Food" data-price="1500">Add to Cart</button>
+      </div></div></div>
+
+    <!-- Dog Toy -->
+    <div class="col-md-4 mb-4"><div class="card h-100">
+      <img src="https://tse1.mm.bing.net/th/id/OIP.uGNHLms-h80MgaJcaP6LVQHaHX?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" class="card-img-top" alt="">
+      <div class="card-body"><h5>Dog Toy</h5><p>Chewable toy for dogs.</p><p class="fw-bold">₹500</p>
+        <button class="btn btn-primary add-to-cart" data-name="Dog Toy" data-price="500">Add to Cart</button>
+      </div></div></div>
+
+    <!-- Cat Food -->
+    <div class="col-md-4 mb-4"><div class="card h-100">
+      <img src="https://www.topvaluereviews.net/wp-content/uploads/2016/05/811rpY-l4L._SL1500_.jpg" class="card-img-top" alt="">
+      <div class="card-body"><h5>Cat Food</h5><p>Healthy and tasty cat food.</p><p class="fw-bold">₹1200</p>
+        <button class="btn btn-primary add-to-cart" data-name="Cat Food" data-price="1200">Add to Cart</button>
+      </div></div></div>
+
+    <!-- Cat Toy -->
+    <div class="col-md-4 mb-4"><div class="card h-100">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.ucY4AbRSNIv-HaluDBoPvQHaHa" class="card-img-top" alt="">
+      <div class="card-body"><h5>Cat Toy</h5><p>Fun toy for cats.</p><p class="fw-bold">₹700</p>
+        <button class="btn btn-primary add-to-cart" data-name="Cat Toy" data-price="700">Add to Cart</button>
+      </div></div></div>
+
+    <!-- Bird Cage -->
+    <div class="col-md-4 mb-4"><div class="card h-100">
+      <img src="https://24x7emall.in/wp-content/uploads/2022/10/1-50.jpeg" class="card-img-top" alt="">
+      <div class="card-body"><h5>Bird Cage</h5><p>Spacious cage for birds.</p><p class="fw-bold">₹2500</p>
+        <button class="btn btn-primary add-to-cart" data-name="Bird Cage" data-price="2500">Add to Cart</button>
+      </div></div></div>
+
+    <!-- Bird Food -->
+    <div class="col-md-4 mb-4"><div class="card h-100">
+      <img src="https://tse3.mm.bing.net/th/id/OIP.QTMS2lEneNGY3Yr6veb-jAHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" class="card-img-top" alt="">
+      <div class="card-body"><h5>Bird Food</h5><p>Nutritious seeds for birds.</p><p class="fw-bold">₹900</p>
+        <button class="btn btn-primary add-to-cart" data-name="Bird Food" data-price="900">Add to Cart</button>
+      </div></div></div>
+
+    <!-- Bird Toy -->
+    <div class="col-md-4 mb-4"><div class="card h-100">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.CUPd-JGnI8EyGaeu0V3-SgHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" class="card-img-top" alt="">
+      <div class="card-body"><h5>Bird Toy</h5><p>Colorful toy for birds.</p><p class="fw-bold">₹400</p>
+        <button class="btn btn-primary add-to-cart" data-name="Bird Toy" data-price="400">Add to Cart</button>
+      </div></div></div>
+
+  </div>
+</div>
+
+<!-- Cart Script -->
+<script>
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  $("#cart-count").text(cart.length);
+  $(".add-to-cart").click(function(){
+    let name = $(this).data("name"), price = $(this).data("price");
+    cart.push({name, price});
+    $("#cart-count").text(cart.length);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert(name + " added to cart!");
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

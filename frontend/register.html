@@ -20,6 +20,10 @@
       box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
       width: 400px;
     }
+    .message {
+      text-align: center;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -30,23 +34,23 @@
     <form id="registerForm">
       <div class="mb-3">
         <label class="form-label">Full Name</label>
-        <input type="text" class="form-control" placeholder="Enter your full name" required>
+        <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input type="email" class="form-control" placeholder="Enter your email" required>
+        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Username</label>
-        <input type="text" class="form-control" placeholder="Choose a username" required>
+        <input type="text" class="form-control" id="username" placeholder="Choose a username" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Password</label>
-        <input type="password" class="form-control" placeholder="Enter your password" required>
+        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Confirm Password</label>
-        <input type="password" class="form-control" placeholder="Re-enter password" required>
+        <input type="password" class="form-control" id="confirmPassword" placeholder="Re-enter password" required>
       </div>
       <button type="submit" class="btn btn-success w-100">Register</button>
     </form>
@@ -54,22 +58,58 @@
     <p class="text-center mt-3">
       Already have an account? <a href="#" id="loginLink">Login</a>
     </p>
+    <div id="message" class="message"></div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    // Back to Login Page
-    $(document).ready(function(){
-      $("#loginLink").click(function(e){
+    $(function () {
+      $("#loginLink").on("click", function (e) {
         e.preventDefault();
-        window.location.href = "login.html";
+        location.href = "login.html";
       });
 
-      // Example: form submission handling
-      $("#registerForm").submit(function(e){
+      $("#registerForm").on("submit", function (e) {
         e.preventDefault();
-        alert("🎉 Registration Successful! Now you can login.");
-        window.location.href = "login.html";
+
+        const payload = {
+          fullName: $("#fullName").val().trim(),
+          email: $("#email").val().trim(),
+          username: $("#username").val().trim(),
+          password: $("#password").val().trim(),
+          confirmPassword: $("#confirmPassword").val().trim(),
+        };
+
+        // ---- client-side required-field check (optional) ----
+        if (Object.values(payload).some(v => !v)) {
+          $("#message").html('<span style="color:red;">Please fill in all fields!</span>');
+          return;
+        }
+
+        $.ajax({
+          url: "http://localhost:3000/register",
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(payload),
+
+          // ----- SUCCESS -----
+          success: function (res) {
+            const $msg = $("#message");
+            if (res.success) {
+              $msg.html('<span style="color:green;">' + res.message + '</span>');
+              setTimeout(() => location.href = "login.html", 1500);
+            } else {
+              // *** THIS IS THE ONLY LINE THAT CHANGED ***
+              $msg.html('<span style="color:red;">' + (res.message || "Unknown error") + '</span>');
+            }
+          },
+
+          // ----- ERROR (network / 500) -----
+          error: function (xhr) {
+            const err = xhr.responseJSON?.message || "Server error, try again later.";
+            $("#message").html('<span style="color:red;">' + err + '</span>');
+          }
+        });
       });
     });
   </script>

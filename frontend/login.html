@@ -18,6 +18,18 @@
     }
     .login-card h3 { text-align: center; margin-bottom: 20px; font-weight: bold; }
     .message { text-align: center; margin-top: 15px; }
+    .register-text {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .register-text a {
+      color: #007bff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .register-text a:hover {
+      color: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -36,6 +48,9 @@
     </form>
     <div class="text-center mt-3">
       <button id="homeBtn" class="btn btn-outline-secondary w-100">Go to Home</button>
+    </div>
+    <div class="register-text">
+      <a id="registerLink">Don’t have an account? Register</a>
     </div>
     <div id="message" class="message"></div>
   </div>
@@ -77,6 +92,7 @@
       });
 
       $("#homeBtn").on("click", () => window.location.href = "HOME.html");
+      $("#registerLink").on("click", () => window.location.href = "register.html");
     });
   </script>
 </body>

@@ -6,6 +6,10 @@
   <title>Pet Adoption System - Shop</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    .btn-orange { background-color: #ff6600; color: white; font-weight: bold; border-radius: 8px; padding: 6px 16px; }
+    .btn-orange:hover { background-color: #e65c00; }
+  </style>
 </head>
 <body class="bg-light">
 
@@ -13,35 +17,35 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Pet Adoption</a>
-    <ul class="navbar-nav ms-auto">
+    <ul class="navbar-nav ms-auto align-items-center">
       <li class="nav-item"><a class="nav-link" href="HOME.html">Home</a></li>
-      <li class="nav-item"><a class="nav-link active" href="shop.html">Shop</a></li>
+      <li class="nav-item"><a class="nav-link active" href="online shopping.html">Shop</a></li>
       <li class="nav-item"><a class="nav-link" href="cart.html">Cart <span id="cart-count" class="badge bg-warning">0</span></a></li>
-      <li class="nav-item"><a class="btn btn-light" href="login page.html">Login</a></li>
+      <li class="nav-item" id="authArea">
+        <a class="btn btn-orange" href="login.html">Login</a>
+      </li>
     </ul>
   </div>
 </nav>
 
 <!-- Shop -->
 <div class="container my-5">
-  <h2 class="text-center mb-4">🐾 Pet Shop</h2>
+  <h2 class="text-center mb-4">Pet Shop</h2>
   <div class="row">
-
-    <!-- Dog Food -->
+    <!-- All product cards (same as before) -->
     <div class="col-md-4 mb-4"><div class="card h-100">
       <img src="https://cdn.shopify.com/s/files/1/1709/7655/products/894308002169_1024x1024.png" class="card-img-top" alt="">
       <div class="card-body"><h5>Dog Food</h5><p>Nutritious dry food for dogs.</p><p class="fw-bold">₹1500</p>
         <button class="btn btn-primary add-to-cart" data-name="Dog Food" data-price="1500">Add to Cart</button>
       </div></div></div>
 
-    <!-- Dog Toy -->
+      <!-- Dog Toy -->
     <div class="col-md-4 mb-4"><div class="card h-100">
       <img src="https://tse1.mm.bing.net/th/id/OIP.uGNHLms-h80MgaJcaP6LVQHaHX?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" class="card-img-top" alt="">
       <div class="card-body"><h5>Dog Toy</h5><p>Chewable toy for dogs.</p><p class="fw-bold">₹500</p>
         <button class="btn btn-primary add-to-cart" data-name="Dog Toy" data-price="500">Add to Cart</button>
       </div></div></div>
-
-    <!-- Cat Food -->
+      <!-- Cat Food -->
     <div class="col-md-4 mb-4"><div class="card h-100">
       <img src="https://www.topvaluereviews.net/wp-content/uploads/2016/05/811rpY-l4L._SL1500_.jpg" class="card-img-top" alt="">
       <div class="card-body"><h5>Cat Food</h5><p>Healthy and tasty cat food.</p><p class="fw-bold">₹1200</p>
@@ -76,20 +80,120 @@
         <button class="btn btn-primary add-to-cart" data-name="Bird Toy" data-price="400">Add to Cart</button>
       </div></div></div>
 
+
+
+    <!-- ... repeat other 6 products ... -->
   </div>
 </div>
 
-<!-- Cart Script -->
+<!-- Add to Cart Script -->
 <script>
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  $("#cart-count").text(cart.length);
+  function updateCartCount() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      $("#cart-count").text("0");
+      return;
+    }
+    $.ajax({
+      url: 'http://localhost:3000/api/cart',
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + token },
+      success: function(res) {
+        if (res.success) $("#cart-count").text(res.items.length);
+      }
+    });
+  }
+
   $(".add-to-cart").click(function(){
-    let name = $(this).data("name"), price = $(this).data("price");
-    cart.push({name, price});
-    $("#cart-count").text(cart.length);
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert(name + " added to cart!");
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      alert("Please login first to add items to cart!");
+      window.location.href = "login.html";
+      return;
+    }
+
+    const name = $(this).data("name");
+    const price = $(this).data("price");
+
+    $.ajax({
+      url: 'http://localhost:3000/api/cart/add',
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      contentType: 'application/json',
+      data: JSON.stringify({ name, price }),
+      success: function(res) {
+        if (res.success) {
+          alert(name + " added to cart!");
+          updateCartCount();
+        }
+      },
+      error: function(xhr) {
+        alert(xhr.responseJSON?.message || "Failed to add");
+      }
+    });
   });
+
+  $(document).ready(updateCartCount);
+</script>
+
+<!-- AUTH SCRIPT – NOW SHOWS "My Orders" -->
+<script>
+  function updateAuthUI() {
+    const token = localStorage.getItem('authToken');
+    const username = localStorage.getItem('username');
+    const fullName = localStorage.getItem('fullName');
+    const $authArea = $('#authArea');
+
+    if (token && username) {
+      $authArea.html(`
+        <div class="dropdown">
+          <a class="btn btn-orange dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            Hi, ${fullName || username}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="your_order.html">My Orders</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+          </ul>
+        </div>`);
+    } else {
+      $authArea.html('<a class="btn btn-orange" href="login.html">Login</a>');
+    }
+  }
+
+  function verifyToken() {
+    const token = localStorage.getItem('authToken');
+    if (!token) return updateAuthUI();
+
+    $.ajax({
+      url: 'http://localhost:3000/api/me',
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' + token },
+      success: function (res) {
+        if (res.success) {
+          localStorage.setItem('username', res.username);
+          localStorage.setItem('fullName', res.fullName);
+        } else {
+          localStorage.clear();
+        }
+        updateAuthUI();
+        updateCartCount();
+      },
+      error: function () {
+        localStorage.clear();
+        updateAuthUI();
+      }
+    });
+  }
+
+  $(document).on('click', '#logoutBtn', function (e) {
+    e.preventDefault();
+    localStorage.clear();
+    updateAuthUI();
+    window.location.href = 'online shopping.html';
+  });
+
+  $(function () { verifyToken(); });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

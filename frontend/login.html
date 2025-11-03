@@ -18,18 +18,22 @@
     }
     .login-card h3 { text-align: center; margin-bottom: 20px; font-weight: bold; }
     .message { text-align: center; margin-top: 15px; }
-    .register-text {
-      text-align: center;
-      margin-top: 10px;
+    .register-text { text-align: center; margin-top: 10px; }
+    .register-text a { color: #007bff; text-decoration: underline; cursor: pointer; }
+    .register-text a:hover { color: #0056b3; }
+
+    /* CAPTCHA STYLES */
+    .captcha-container {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 15px;
     }
-    .register-text a {
-      color: #007bff;
-      text-decoration: underline;
-      cursor: pointer;
+    #captchaCanvas {
+      border: 1px solid #ddd; border-radius: 6px; background: #f9f9f9;
     }
-    .register-text a:hover {
-      color: #0056b3;
+    #refreshCaptcha {
+      background: #007bff; color: white; border: none; width: 40px; height: 40px;
+      border-radius: 50%; cursor: pointer; font-size: 18px;
     }
+    #refreshCaptcha:hover { background: #0056b3; }
   </style>
 </head>
 <body>
@@ -44,29 +48,105 @@
         <label for="password" class="form-label">Password</label>
         <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
       </div>
+
+      <!-- TEXT CAPTCHA (Hidden when disabled) -->
+      <div class="captcha-container">
+        <canvas id="captchaCanvas" width="120" height="40"></canvas>
+        <button type="button" id="refreshCaptcha" title="Refresh CAPTCHA">Refresh</button>
+      </div>
+      <div class="mb-3">
+        <label for="captchaInput" class="form-label">Enter the text above</label>
+        <input type="text" class="form-control" id="captchaInput" placeholder="Type CAPTCHA here">
+      </div>
+
       <button type="submit" class="btn btn-primary w-100">Login</button>
     </form>
+
     <div class="text-center mt-3">
       <button id="homeBtn" class="btn btn-outline-secondary w-100">Go to Home</button>
     </div>
+
     <div class="register-text">
       <a id="registerLink">Don’t have an account? Register</a>
     </div>
+
     <div id="message" class="message"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ====== MAIN SCRIPT WITH TOGGLE ====== -->
   <script>
+    // === TOGGLE CAPTCHA: CHANGE THIS LINE ONLY ===
+    const USE_CAPTCHA = true;  // Set to false to DISABLE CAPTCHA completely
+
     $(document).ready(function () {
+      let captchaText = '';
+
+      // === CAPTCHA GENERATION ===
+      function generateCaptcha() {
+        if (!USE_CAPTCHA) return;
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        captchaText = '';
+        for (let i = 0; i < 6; i++) {
+          captchaText += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        drawCaptcha();
+      }
+
+      function drawCaptcha() {
+        if (!USE_CAPTCHA) return;
+        const canvas = document.getElementById('captchaCanvas');
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#f0f0f0'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.font = '24px Arial'; ctx.fillStyle = '#333'; ctx.textAlign = 'center';
+        ctx.fillText(captchaText, canvas.width / 2, 28);
+        for (let i = 0; i < 5; i++) {
+          ctx.strokeStyle = `rgba(0,0,0,${Math.random() * 0.3})`;
+          ctx.beginPath();
+          ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+          ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+          ctx.stroke();
+        }
+      }
+
+      // === TOGGLE UI VISIBILITY ===
+      if (!USE_CAPTCHA) {
+        $('.captcha-container, #captchaInput').closest('.mb-3').hide();
+      } else {
+        generateCaptcha();
+        $('#refreshCaptcha').on('click', generateCaptcha);
+      }
+
+      // === LOGIN SUBMIT ===
       $("#loginForm").on("submit", function (e) {
         e.preventDefault();
+
         const username = $("#username").val().trim();
         const password = $("#password").val().trim();
 
         if (!username || !password) {
-          $("#message").html('<span style="color: red;">Please fill in all fields!</span>');
+          $("#message").html('<span style="color:red;">Please fill username & password!</span>');
           return;
         }
+
+        // CAPTCHA CHECK (only if enabled)
+        if (USE_CAPTCHA) {
+          const userCaptcha = $("#captchaInput").val().trim();
+          if (!userCaptcha) {
+            $("#message").html('<span style="color:red;">Please enter the CAPTCHA!</span>');
+            return;
+          }
+          if (userCaptcha !== captchaText) {
+            $("#message").html('<span style="color:red;">Incorrect CAPTCHA!</span>');
+            generateCaptcha();
+            $("#captchaInput").val('');
+            return;
+          }
+        }
+
+        $("#message").html('Logging in...');
 
         $.ajax({
           url: 'http://localhost:3000/login',
@@ -77,16 +157,18 @@
             if (res.success) {
               localStorage.setItem('authToken', res.token);
               localStorage.setItem('username', res.username);
-              localStorage.setItem('fullName', res.fullName);
-              $("#message").html('<span style="color: green;">' + res.message + '</span>');
+              localStorage.setItem('fullName', res.fullName || res.username);
+              $("#message").html('<span style="color:green;">Login successful!</span>');
               setTimeout(() => { window.location.href = "HOME.html"; }, 1200);
             } else {
-              $("#message").html('<span style="color: red;">' + (res.message || "Login failed") + '</span>');
+              if (USE_CAPTCHA) { generateCaptcha(); $("#captchaInput").val(''); }
+              $("#message").html('<span style="color:red;">' + (res.message || "Login failed") + '</span>');
             }
           },
           error: function (xhr) {
-            const msg = xhr.responseJSON?.message || "Server error, try again.";
-            $("#message").html('<span style="color: red;">' + msg + '</span>');
+            if (USE_CAPTCHA) { generateCaptcha(); $("#captchaInput").val(''); }
+            const msg = xhr.responseJSON?.message || "Server error.";
+            $("#message").html('<span style="color:red;">' + msg + '</span>');
           }
         });
       });

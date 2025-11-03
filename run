@@ -22,3 +22,8 @@ npxhttp-server
 
 open browser with url:
 http://127.0.0.1:8080/login.html
+
+
+
+?? if you no need captcha in the login page just add false in this key in login.html ??
+const USE_CAPTCHA = false;

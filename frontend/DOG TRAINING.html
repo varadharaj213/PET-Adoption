@@ -128,31 +128,49 @@
 
     /* Light tweaks */
     .shadow-soft { box-shadow: 0 12px 30px rgba(2, 8, 23, 0.08); }
+
+    /* AUTH BUTTON STYLE */
+    .btn-orange {
+      background-color: #ff6600;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      padding: 6px 16px;
+      font-size: 0.9rem;
+    }
+    .btn-orange:hover {
+      background-color: #e65c00;
+      color: white;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
+  <!-- Navbar with AUTH AREA -->
   <nav class="navbar navbar-expand-lg shadow-sm">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">ThePetNest</a>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-      <ul class="navbar-nav align-items-center">
-        <li class="nav-item"><a class="nav-link" href="dog-training.html">Dog Training</a></li>
-        <li class="nav-item"><a class="nav-link" href="pet-relocation.html">Pet Relocation</a></li>
-        <li class="nav-item"><a class="nav-link" href="consult-vet.html">Consult a Vet</a></li>
-        <li class="nav-item"><a class="nav-link" href="dog-walking.html">Dog Walking</a></li>
-        <li class="nav-item"><a class="nav-link" href="pet-insurance.html">Pet Insurance</a></li>
-      </ul>
+    <div class="container">
+      <a class="navbar-brand" href="index.html">ThePetNest</a>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item"><a class="nav-link" href="HOME.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="dog-training.html">Dog Training</a></li>
+          <li class="nav-item"><a class="nav-link" href="pet-relocation.html">Pet Relocation</a></li>
+          <li class="nav-item"><a class="nav-link" href="consult-vet.html">Consult a Vet</a></li>
+          <li class="nav-item"><a class="nav-link" href="dog-walking.html">Dog Walking</a></li>
+          <li class="nav-item"><a class="nav-link" href="pet-insurance.html">Pet Insurance</a></li>
+          <!-- AUTH AREA -->
+          <li class="nav-item ms-3" id="authArea">
+            <a class="btn btn-orange" href="login.html">Login</a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
-
+  </nav>
 
   <!-- Hero -->
   <header class="hero" id="home">
     <div class="content container" data-aos="fade-up" data-aos-duration="800">
-      <h1>Professional Dog Training, Made Fun 🐾</h1>
+      <h1>Professional Dog Training, Made Fun</h1>
       <p class="lead">Obedience, behavior correction, puppy socialization, and custom 1:1 sessions at your home — with certified trainers you can trust.</p>
       <div class="d-flex gap-3 justify-content-center mt-3">
         <a href="#services" class="btn btn-gradient">Explore Services</a>
@@ -165,7 +183,7 @@
       <img loading="lazy" src="https://images.unsplash.com/photo-1505628346881-b72b27e84530?auto=format&fit=crop&w=200&q=70" alt="Happy dog"/>
       <div>
         <div class="fw-bold">9,800+ Pets Trained</div>
-        <small>Avg. rating 4.9/5 ⭐</small>
+        <small>Avg. rating 4.9/5</small>
       </div>
     </div>
   </header>
@@ -423,7 +441,7 @@
             <a class="text-warning me-3" href="#"><i class="fab fa-instagram fa-lg"></i></a>
             <a class="text-warning" href="#"><i class="fab fa-twitter fa-lg"></i></a>
           </div>
-          <small class="d-block">&copy; 2025 ThePetNest — All rights reserved</small>
+          <small class="d-block">© 2025 ThePetNest — All rights reserved</small>
         </div>
       </div>
     </div>
@@ -489,7 +507,7 @@
   <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
     <div id="submitToast" class="toast align-items-center text-white bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
       <div class="d-flex">
-        <div class="toast-body">Request received! We will call you shortly. 🐶</div>
+        <div class="toast-body">Request received! We will call you shortly.</div>
         <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
     </div>
@@ -532,36 +550,109 @@
     }, { threshold: 0.6 });
     counters.forEach(c => io.observe(c));
 
-    // Dark mode toggle + persist
-    const modeToggle = document.getElementById('modeToggle');
-    const applyMode = () => {
-      const m = localStorage.getItem('mode') || 'light';
-      document.body.classList.toggle('dark', m === 'dark');
-      modeToggle.textContent = m === 'dark' ? '☀️' : '🌙';
-    };
-    applyMode();
-    modeToggle.addEventListener('click', () => {
-      const m = document.body.classList.contains('dark') ? 'light' : 'dark';
-      localStorage.setItem('mode', m); applyMode();
-    });
-
-    // Simple Bootstrap validation + toast feedback
+    // BOOK FORM → SAVE TO DB
     const bookForm = document.getElementById('bookForm');
     const submitToast = new bootstrap.Toast(document.getElementById('submitToast'));
     bookForm.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!bookForm.checkValidity()) {
         e.stopPropagation();
-      } else {
-        // Simulate submit success
-        submitToast.show();
-        bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
-        bookForm.reset();
+        bookForm.classList.add('was-validated');
+        return;
       }
+
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        alert('Please login to book a session!');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const data = {
+        name: bookForm.name.value,
+        phone: bookForm.phone.value,
+        city: bookForm.city.value,
+        age: bookForm.age.value,
+        goals: bookForm.goals.value
+      };
+
+      fetch('http://localhost:3000/api/sessions/book', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          submitToast.show();
+          bootstrap.Modal.getInstance(document.getElementById('bookModal')).hide();
+          bookForm.reset();
+          bookForm.classList.remove('was-validated');
+        } else {
+          alert(res.message || 'Failed to book');
+        }
+      })
+      .catch(() => alert('Server error. Try again.'));
+      
       bookForm.classList.add('was-validated');
     });
-    
+
+    // AUTH SCRIPT – SHOW NAME IN TOP-RIGHT
+    function updateAuthUI() {
+      const token = localStorage.getItem('authToken');
+      const username = localStorage.getItem('username');
+      const fullName = localStorage.getItem('fullName');
+      const authArea = document.getElementById('authArea');
+
+      if (token && username) {
+        authArea.innerHTML = `
+          <div class="dropdown">
+            <a class="btn btn-orange dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+              Hi, ${fullName || username}
+            </a>
+          </div>`;
+      } else {
+        authArea.innerHTML = '<a class="btn btn-orange" href="login.html">Login</a>';
+      }
+    }
+
+    function verifyToken() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return updateAuthUI();
+
+      fetch('http://localhost:3000/api/me', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success) {
+          localStorage.setItem('username', res.username);
+          localStorage.setItem('fullName', res.fullName || res.username);
+        } else {
+          localStorage.clear();
+        }
+        updateAuthUI();
+      })
+      .catch(() => {
+        localStorage.clear();
+        updateAuthUI();
+      });
+    }
+
+    document.addEventListener('click', e => {
+      if (e.target.id === 'logoutBtn') {
+        e.preventDefault();
+        localStorage.clear();
+        updateAuthUI();
+        window.location.href = 'dog-training.html';
+      }
+    });
+
+    // Run on page load
+    verifyToken();
   </script>
 </body>
-
 </html>

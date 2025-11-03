@@ -265,6 +265,70 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
+
+// Session Schema
+const sessionSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  name: { type: String, required: true },
+  phone: { type: String, required: true },
+  city: { type: String, required: true },
+  age: { type: String, required: true },
+  goals: { type: String, required: true },
+  bookedAt: { type: Date, default: Date.now }
+});
+const Session = mongoose.model('MySession', sessionSchema); // Collection: my_sessions
+
+// Book Session Endpoint
+app.post('/api/sessions/book', async (req, res) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  const session = token && sessions.get(token);
+  if (!session) return res.status(401).json({ success: false, message: 'Login required' });
+
+  const { name, phone, city, age, goals } = req.body;
+  if (!name || !phone || !city || !age || !goals) {
+    return res.status(400).json({ success: false, message: 'Missing fields' });
+  }
+
+  try {
+    const user = await User.findOne({ username: session.username });
+    const newSession = new Session({ userId: user._id, name, phone, city, age, goals });
+    await newSession.save();
+    res.json({ success: true, message: 'Session booked' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+
+// ---------- WALKING BOOKING ----------
+const walkingBookingSchema = new mongoose.Schema({
+  userId:    { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  paymentId: { type: String, required: true },
+  service:   { type: String, required: true },
+  amount:    { type: Number, required: true }, // rupees
+  bookedAt:  { type: Date, default: Date.now }
+});
+const WalkingBooking = mongoose.model('WalkingServiceBooking', walkingBookingSchema);
+
+app.post('/api/walking/book', async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token || !sessions.has(token)) return res.status(401).json({ success: false, message: 'Login required' });
+
+  const { paymentId, service, amount } = req.body;
+  if (!paymentId || !service || !amount) return res.status(400).json({ success: false, message: 'Missing data' });
+
+  try {
+    const user = await User.findOne({ username: sessions.get(token).username });
+    const booking = new WalkingBooking({ userId: user._id, paymentId, service, amount });
+    await booking.save();
+    res.json({ success: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 // Start server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

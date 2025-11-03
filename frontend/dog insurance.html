@@ -782,6 +782,9 @@
                 font-size: 1.1rem;
             }
         }
+
+        .btn-orange { background:#ff6b35; color:white; border-radius:8px; }
+    .btn-orange:hover { background:#e65c28; color:white; }
         
         @media (max-width: 576px) {
             .hero {
@@ -821,11 +824,15 @@
                 </button>
                 <nav>
                     <ul id="navMenu">
-                        <li><a href="#">Home</a></li>
+                        <li><a href="HOME.html">Home</a></li>
                         <li><a href="#">About</a></li>
                         <li><a href="#">Insurance Plans</a></li>
                         <li><a href="#">Claims</a></li>
                         <li><a href="#">Contact</a></li>
+                        <!-- AUTH AREA (DYNAMIC) -->
+                        <li class="nav-item ms-2" id="authArea">
+                            <a class="btn btn-orange fw-bold px-3" href="login.html">Login</a>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -1064,6 +1071,57 @@
         <i class="fas fa-arrow-up"></i>
     </a>
 
+     <!-- ====== AUTH UI SCRIPT (ADD THIS) ====== -->
+<script>
+  function updateAuthUI() {
+    const token = localStorage.getItem('authToken');
+    const name = localStorage.getItem('fullName') || localStorage.getItem('username') || '';
+    const el = document.getElementById('authArea');
+    if (token && name) {
+      el.innerHTML = `
+        <div class="dropdown">
+          <a class="btn btn-orange dropdown-toggle fw-bold px-3" href="#" data-bs-toggle="dropdown">Hi, ${name}</a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="your_order.html">My Orders</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
+          </ul>
+        </div>`;
+    } else {
+      el.innerHTML = '<a class="btn btn-orange fw-bold px-3" href="login.html">Login</a>';
+    }
+  }
+
+  function verifyToken() {
+    const t = localStorage.getItem('authToken');
+    if (!t) return updateAuthUI();
+    fetch('http://localhost:3000/api/me', {
+      headers: { 'Authorization': 'Bearer ' + t }
+    })
+    .then(r => r.json())
+    .then(d => {
+      if (d.success) {
+        localStorage.setItem('username', d.username);
+        localStorage.setItem('fullName', d.fullName || d.username);
+      } else {
+        localStorage.clear();
+      }
+      updateAuthUI();
+    })
+    .catch(() => { localStorage.clear(); updateAuthUI(); });
+  }
+
+  document.addEventListener('click', e => {
+    if (e.target.id === 'logoutBtn') {
+      e.preventDefault();
+      localStorage.clear();
+      updateAuthUI();
+      location.reload();
+    }
+  });
+
+  verifyToken();
+</script>
     <script>
         // Mobile Navigation Toggle
         const navToggle = document.getElementById('navToggle');
